@@ -1,0 +1,84 @@
+---
+title: "Group03_ML"
+author: "Group03"
+date: "2022-10-22"
+output: pdf_document
+---
+## Adding Genre variables to dataset
+```{r}
+library(dplyr)
+data = read.csv("n_movies_emomods.csv")
+n = length(data)
+n
+data_edit = data %>% filter(is.na(data$rating) == FALSE)
+#mean(data_edit$rating)
+#mean(data_edit$tiers)
+#tiers = data_edit$tiers
+#rating = data_edit$rating
+
+anger = data_edit$anger
+disgust = data_edit$disgust
+fear = data_edit$fear
+joy = data_edit$joy
+neutral = data_edit$neutral
+sadness = data_edit$sadness
+surprise = data_edit$surprise
+max(anger, disgust, fear, joy, neutral, sadness, surprise)
+
+
+
+edited_data1 = data_edit %>% mutate(Action = case_when(grepl("Action", data_edit$genre) ~ 1),
+                                    Comedy = case_when(grepl("Comedy", data_edit$genre) ~ 1), 
+                                    Drama = case_when(grepl("Drama", data_edit$genre) ~ 1),
+                                    Biography= case_when(grepl("Biography", data_edit$genre) ~ 1),
+                                    History = case_when(grepl("History", data_edit$genre) ~ 1),
+                                    Crime = case_when(grepl("Crime", data_edit$genre) ~ 1), 
+                                    Horror = case_when(grepl("History", data_edit$genre) ~ 1),
+                                    Mystery = case_when(grepl("Mystery", data_edit$genre) ~ 1),
+                                    Animation = case_when(grepl("Animation", data_edit$genre) ~ 1),
+                                    Adventure = case_when(grepl("Adventure", data_edit$genre) ~ 1),
+                                    Fantasy = case_when(grepl("Fantasy", data_edit$genre) ~ 1),
+                                    Thriller = case_when(grepl("Thriller", data_edit$genre) ~ 1),
+                                    Romance = case_when(grepl("Romance", data_edit$genre) ~ 1),
+                                    Sport = case_when(grepl("Sport", data_edit$genre) ~ 1), 
+                                    SciFi = case_when(grepl("Sci-Fi", data_edit$genre) ~ 1),
+                                    Short = case_when(grepl("Short", data_edit$genre) ~ 1), 
+                                    War = case_when(grepl("War", data_edit$genre) ~ 1),
+                                    Music = case_when(grepl("Music", data_edit$genre) ~ 1), 
+                                    Family = case_when(grepl("Family", data_edit$genre) ~ 1), 
+                                    Western = case_when(grepl("Western", data_edit$genre)~1))
+                                                        
+edited_data1[is.na(edited_data1)] = 0
+
+# top 10 movie genres we only regress these ones, but should also consider some
+# less popular genres so that our results are not skewed
+# maybe we do top 5 and then some random ones like western, music, biography etc
+#1. Horror
+#2. Sci-Fi
+#3. Action
+#4. Comedy
+#5. Drama
+#6. Thriller
+#7. Fantasy
+#8. Adventure
+#9. War 
+# 10. Mystery
+
+```
+## Popular Genres
+
+```{r}
+## Finding the most common genres in our dataset
+#which(colnames(edited_data1)=="Action" )
+#which( colnames(edited_data1)=="Western" )
+col_data <- edited_data1[, 19:38]
+genre_count <- apply(col_data, MARGIN = 2, FUN = sum)
+all_genre <- sort(genre_count, decreasing = TRUE)
+pop_genre <- sort(genre_count, decreasing = TRUE)[1:10]
+print(pop_genre)
+
+```
+
+```{r}
+
+```
