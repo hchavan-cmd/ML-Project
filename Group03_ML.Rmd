@@ -1,9 +1,3 @@
----
-title: "Group03_ML"
-author: "Group03"
-date: "2022-10-22"
-output: pdf_document
----
 ## Adding Genre variables to dataset
 ```{r}
 library(dplyr)
@@ -65,7 +59,7 @@ edited_data1[is.na(edited_data1)] = 0
 # 10. Mystery
 
 ```
-## Popular Genres
+## Most Common Genres
 
 ```{r}
 ## Finding the most common genres in our dataset
@@ -78,7 +72,76 @@ pop_genre <- sort(genre_count, decreasing = TRUE)[1:10]
 print(pop_genre)
 
 ```
-
+## Redundant Chunk....Will change later
 ```{r}
+# Genre regresison
+rating = edited_data1$rating
+tier = edited_data1$tiers
+action = edited_data1$Action
+comedy = edited_data1$Comedy
+scifi = edited_data1$SciFi
+drama = edited_data1$Drama
+war = edited_data1$War
+adventure = edited_data1$Adventure
+fantasy = edited_data1$Fantasy
+horror = edited_data1$Horror
+music = edited_data1$Music
+western = edited_data1$Western
+crime = edited_data1$Crime
+romance = edited_data1$Romance
+regression = lm(rating ~ action + comedy + crime +romance + music)
+summary(regression)
 
+# can run individual regressions too
+lm(rating ~ action)
+```
+
+## Regressions
+```{r}
+#1. top 5 regression
+top5regression = lm(rating ~ drama + comedy + action + crime + adventure)
+top5sum <- summary(top5regression)
+top5sum
+mean(top5sum$residuals^2) # Mean Squared error
+sqrt(mean(top5sum$residuals^2)) # root MSE
+
+
+##2. random sample regression
+set.seed(121)
+sample(genre_count, size = 5, replace = FALSE)
+randomregression = lm(rating ~ western+ thriller+ horror+ biography+ animation)
+randsum <- summary(randomregression)
+randsum
+mean(randsum$residuals^2) # Mean Squared error
+sqrt(mean(randsum$residuals^2)) # Root MSE
+
+# Emotion regression
+regression = lm(rating ~ anger + disgust + fear + surprise + sadness + joy)
+sm = summary(regression)
+reg3 = lm(rating ~ anger + surprise)
+summary(reg3)
+reg4 = lm(rating ~ neutral)
+summary(reg4)
+mean_squared_error = mean(sm$residuals^2)
+#reg2 = lm(tiers ~ neutral)
+
+# emo-regression
+emo_reg = lm(rating ~ anger+ disgust +fear + joy + sadness + surprise, edited_data1)
+summary(emo_reg)
+
+# emo + votes
+emo2_reg = lm(rating ~ anger+ disgust +fear + joy + sadness + surprise + votes, edited_data1)
+summary(emo2_reg)
+
+#emo + votes + popular genres
+all_reg = lm(rating ~ anger+ disgust +fear + joy + sadness + surprise + votes + Action + Drama + Horror + Comedy + Thriller + Fantasy + Adventure + SciFi + War + Mystery, edited_data1)
+test = summary(emo_reg)
+
+#votes
+vote_reg = lm(rating ~ votes, edited_data1)
+
+test = summary(vote_reg)
+test
+paste("MSE is: " , toString(mean(test$residuals^2)))
+paste("RMSE is: " , toString(sqrt(mean(test$residuals^2))))
 ```
