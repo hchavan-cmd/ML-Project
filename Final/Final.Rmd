@@ -1,0 +1,64 @@
+```{r}
+data = read.csv('final_df.csv')
+
+col_data <- edited_data1[, 19:38]
+length(data)
+genre_indicators <- data[, 16:42]
+genre_count <- apply(genre_indicators, MARGIN = 2, FUN = sum)
+all_genre <- sort(genre_count, decreasing = TRUE)
+pop_genre <- sort(genre_count, decreasing = TRUE)[1:10]
+pop_genre
+
+#Top 10 Genres
+##Drama      Comedy      Action       Crime   Adventure   Animation Documentary     Romance    Thriller     Mystery 
+
+```
+
+```{r}
+#1. top 5 regression
+top5regression = lm(rating ~ Drama + Comedy + Action + Crime + Adventure, data)
+top5sum <- summary(top5regression)
+top5sum
+mean(top5sum$residuals^2) # Mean Squared error
+sqrt(mean(top5sum$residuals^2)) # root MSE
+
+
+##2. random sample regression
+set.seed(121)
+sample(genre_count, size = 5, replace = FALSE)
+randomregression = lm(rating ~ Western+ Thriller+ Horror+ Biography+ Animation, data)
+randsum <- summary(randomregression)
+randsum
+mean(randsum$residuals^2) # Mean Squared error
+sqrt(mean(randsum$residuals^2))# Root MSE
+
+# Emotion regression
+emo_reg = lm(rating ~ anger+ disgust +fear + joy + sadness + surprise, data)
+summary(emo_reg)
+reg3 = lm(rating ~ anger + surprise, data)
+summary(reg3)
+reg4 = lm(rating ~ neutral, data)
+summary(reg4)
+mean_squared_error = mean(emo_reg$residuals^2)
+#reg2 = lm(tiers ~ neutral)
+
+
+
+# emo + votes
+emo2_reg = lm(rating ~ anger+ disgust +fear + joy + sadness + surprise + votes, data)
+summary(emo2_reg)
+
+#emo + votes + popular genres
+all_reg = lm(rating ~ anger+ disgust +fear + joy + sadness + surprise + votes + Action + Drama + Crime + Comedy + Thriller + Fantasy + Adventure + Romance + Animation + Mystery, data)
+test = summary(emo_reg)
+
+#Drama    Comedy    Action     Crime Adventure Animation   Romance  Thriller   Mystery   Fantasy 
+
+#votes
+vote_reg = lm(rating ~ votes, data)
+
+test = summary(vote_reg)
+test
+paste("MSE is: " , toString(mean(test$residuals^2)))
+paste("RMSE is: " , toString(sqrt(mean(test$residuals^2))))
+```
